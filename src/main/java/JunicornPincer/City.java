@@ -12,6 +12,7 @@ public enum City {
     SZOMBATHELY,
     BUDAKALÁSZ,
     BUDAÖRS,
-    GÖDÖLLŐ;
+    GÖDÖLLŐ,
+    SZENTENDRE;
 
 }
