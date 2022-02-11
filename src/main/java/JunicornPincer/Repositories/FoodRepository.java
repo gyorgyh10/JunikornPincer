@@ -1,7 +1,5 @@
 package JunicornPincer.Repositories;
 
-import JunicornPincer.Repositories.DatabaseConfig;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,7 +18,7 @@ public class FoodRepository implements AutoCloseable {
         }
     }
 
-    public void createFoodCategoriesTable(){
+    public void createFoodCategoriesTable() {
         try {
             String str = "CREATE TABLE IF NOT EXISTS FoodCategories (" +
                     "id INT PRIMARY KEY AUTO_INCREMENT, " +

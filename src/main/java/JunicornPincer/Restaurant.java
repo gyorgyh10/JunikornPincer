@@ -13,7 +13,6 @@ public class Restaurant {
     private List<Integer> ratings = new ArrayList<>();  //SQLben rating tábla. aztán JOIN (food->rating->restaurantID-val)
 
 
-
     public Restaurant(String name, Address address, String phoneNumber, List<Food> foodList, boolean canDeliver) {
         this.name = name;
         this.address = address;
