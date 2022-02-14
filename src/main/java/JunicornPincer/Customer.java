@@ -22,14 +22,13 @@ public class Customer {
         this.address = address;
     }
 
-    public Customer(int id, String name, String email, String password, String phoneNumber, Address address, List<Orders> ordersList) {
+    public Customer(int id, String name, String email, String password, String phoneNumber, Address address) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.ordersList = ordersList;
     }
 
     public int getId() {
@@ -86,5 +85,18 @@ public class Customer {
 
     public void setOrdersList(List<Orders> ordersList) {
         this.ordersList = ordersList;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", address=" + address +
+                ", ordersList=" + ordersList +
+                '}';
     }
 }

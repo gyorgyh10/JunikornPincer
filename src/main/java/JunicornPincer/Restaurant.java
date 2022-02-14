@@ -95,6 +95,19 @@ public class Restaurant {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address=" + address +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", foodList=" + foodList +
+                ", canDeliver=" + canDeliver +
+                ", ratings=" + ratings +
+                '}';
+    }
 }
 
 

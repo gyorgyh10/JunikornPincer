@@ -16,32 +16,33 @@ public class CustomerRepository implements AutoCloseable {
             e.printStackTrace();
         }
     }
+
     public void createCustomerTable() {
-    try {
-        String str= "CREATE TABLE IF NOT EXISTS Customer (" +
-                "id INT PRIMARY KEY AUTO_INCREMENT, " +
-                "name VARCHAR (255) NOT NULL, " +
-                "email VARCHAR (255) NOT NULL, " +
-                "password VARCHAR (255) NOT NULL, " +
-                "phoneNumber VARCHAR (255) NOT NULL, " +
-                "addressID INT NOT NULL, " +
-                "FOREIGN KEY(AddressID) REFERENCES Address(id)); ";
-        Statement statement = connection.createStatement();
-        statement.execute(str);
+        try {
+            String str = "CREATE TABLE IF NOT EXISTS Customer (" +
+                    "id INT PRIMARY KEY AUTO_INCREMENT, " +
+                    "name VARCHAR (255) NOT NULL, " +
+                    "email VARCHAR (255) NOT NULL, " +
+                    "password VARCHAR (255) NOT NULL, " +
+                    "phoneNumber VARCHAR (255) NOT NULL, " +
+                    "addressID INT NOT NULL, " +
+                    "FOREIGN KEY(AddressID) REFERENCES Address(id)); ";
+            Statement statement = connection.createStatement();
+            statement.execute(str);
 
-    } catch (
-    SQLException e) {
-        e.printStackTrace();
-    }
+        } catch (
+                SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void insertCustomer(Customer customer){
-        String sql="INSERT INTO customer (name, email, password, phoneNumber, addressID) " +
+    public void insertCustomer(Customer customer) {
+        String sql = "INSERT INTO customer (name, email, password, phoneNumber, addressID) " +
                 "VALUES (?,?,?,?,?)";
 //        PreparedStatement ps = connection.prepareStatement(sql,
 //                Statement.RETURN_GENERATED_KEYS);
 
-        try (PreparedStatement preparedStatement= connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, customer.getName());
             preparedStatement.setString(2, customer.getEmail());
             preparedStatement.setString(3, customer.getPassword());
@@ -58,6 +59,59 @@ public class CustomerRepository implements AutoCloseable {
 
 //            System.out.println("Inserted record's ID: " + generatedKey);
             customer.setId(generatedKey);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public Customer searchById(int id) {
+        Customer customer = null;
+        String sql = "SELECT c.name AS c_name, c.email AS c_email, c.password AS c_password, " +
+                "c.phoneNumber AS c_phoneNumber, c.addressID AS c_addressID, a.city AS c_city, " +
+                "a.street AS a_street, a.number AS a_number FROM customer c " +
+                "JOIN address a ON a.id =c.addressID " +
+                "WHERE c.id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                customer = new Customer(id, resultSet.getString("c_name"), resultSet.getString("c_email"),
+                        resultSet.getString("c_password"), resultSet.getString("c_phoneNumber"),
+                        new Address(resultSet.getInt("c_addressID"), resultSet.getString("a_city"),
+                                resultSet.getString("a_street"), resultSet.getString("a_number")));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return customer;
+    }
+
+//    TODO
+    public void updateCustomerInfo(Customer customer) {
+        String sql = "UPDATE customer  SET name=?, email=?, password=?, phoneNumber=? WHERE id=? ";
+//        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//            preparedStatement.setString(1, customer.getCity());
+//            preparedStatement.setString(2, customer.getStreet());
+//            preparedStatement.setString(3, customer.getNumber());
+//            preparedStatement.setInt(4, customer.getId());
+//            preparedStatement.executeUpdate();
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+    }
+
+    public void updateCustomerAddress(Address address){
+
+    }
+
+    public void printAll() {
+        String sql = "SELECT * FROM customer";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt(1) + " | " + resultSet.getString(2) + " | " +
+                        resultSet.getString(3) + " | " + resultSet.getString(4));
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

@@ -62,4 +62,15 @@ public class Orders {
     public void setEstimatedWaitingTime(int estimatedWaitingTime) {
         this.estimatedWaitingTime = estimatedWaitingTime;
     }
+
+    @Override
+    public String toString() {
+        return "Orders{" +
+                "id=" + id +
+                ", date=" + date +
+                ", foodList=" + foodList +
+                ", customer=" + customer +
+                ", estimatedWaitingTime=" + estimatedWaitingTime +
+                '}';
+    }
 }
