@@ -39,8 +39,6 @@ public class CustomerRepository implements AutoCloseable {
     public void insertCustomer(Customer customer) {
         String sql = "INSERT INTO customer (name, email, password, phoneNumber, addressID) " +
                 "VALUES (?,?,?,?,?)";
-//        PreparedStatement ps = connection.prepareStatement(sql,
-//                Statement.RETURN_GENERATED_KEYS);
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, customer.getName());
@@ -67,7 +65,7 @@ public class CustomerRepository implements AutoCloseable {
     public Customer searchById(int id) {
         Customer customer = null;
         String sql = "SELECT c.name AS c_name, c.email AS c_email, c.password AS c_password, " +
-                "c.phoneNumber AS c_phoneNumber, c.addressID AS c_addressID, a.city AS c_city, " +
+                "c.phoneNumber AS c_phoneNumber, c.addressID AS c_addressID, a.city AS a_city, " +
                 "a.street AS a_street, a.number AS a_number FROM customer c " +
                 "JOIN address a ON a.id =c.addressID " +
                 "WHERE c.id = ?";
@@ -86,7 +84,7 @@ public class CustomerRepository implements AutoCloseable {
         return customer;
     }
 
-//    TODO
+    //    TODO
     public void updateCustomerInfo(Customer customer) {
         String sql = "UPDATE customer  SET name=?, email=?, password=?, phoneNumber=? WHERE id=? ";
 //        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -100,17 +98,22 @@ public class CustomerRepository implements AutoCloseable {
 //        }
     }
 
-    public void updateCustomerAddress(Address address){
+    public void updateCustomerAddress(Address address) {
 
     }
 
     public void printAll() {
-        String sql = "SELECT * FROM customer";
+        String sql = "SELECT * FROM customer c " +
+                "JOIN address a ON a.ID = c.addressID ";
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 System.out.println(resultSet.getInt(1) + " | " + resultSet.getString(2) + " | " +
-                        resultSet.getString(3) + " | " + resultSet.getString(4));
+                        resultSet.getString(3) + " | " + resultSet.getString(4) + " | "
+                        + resultSet.getString(5) + " | " + resultSet.getInt(6) + " | "
+                        + resultSet.getString(7) + " | " + resultSet.getString(8) + " | " + resultSet.getString(9)
+                        + " | " + resultSet.getString(10));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

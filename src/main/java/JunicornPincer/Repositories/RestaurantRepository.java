@@ -1,6 +1,6 @@
 package JunicornPincer.Repositories;
 
-import JunicornPincer.Food;
+import JunicornPincer.Address;
 import JunicornPincer.Restaurant;
 
 import java.sql.*;
@@ -35,10 +35,10 @@ public class RestaurantRepository implements AutoCloseable {
         }
     }
 
-    public void insertRestaurant(Restaurant restaurant){
-        String sql="INSERT INTO restaurant (name, addressID, phoneNumber, canDeliver) " +
+    public void insertRestaurant(Restaurant restaurant) {
+        String sql = "INSERT INTO restaurant (name, addressID, phoneNumber, canDeliver) " +
                 "VALUES (?,?,?,?)";
-        try (PreparedStatement preparedStatement= connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, restaurant.getName());
             preparedStatement.setInt(2, restaurant.getAddress().getId());
             preparedStatement.setString(3, restaurant.getPhoneNumber());
@@ -52,6 +52,62 @@ public class RestaurantRepository implements AutoCloseable {
             }
 
             restaurant.setId(generatedKey);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+//    public Restaurant searchById(int id) {
+//        Restaurant restaurant = new Restaurant();                     TODO
+//        String sql = "SELECT * FROM restaurant r" +
+//                "LEFT JOIN food f ON f.restaurantID = r.ID " +
+//                "WHERE r.id = ?";
+//        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//            preparedStatement.setInt(1, id);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            while (resultSet.next()) {
+//                restaurant = new Restaurant(id, resultSet.getString("c_name"), resultSet.getString("c_email"),
+//                        resultSet.getString("c_password"), resultSet.getString("c_phoneNumber"),
+//                        new Address(resultSet.getInt("c_addressID"), resultSet.getString("a_city"),
+//                                resultSet.getString("a_street"), resultSet.getString("a_number")));
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//        return restaurant;
+//    }
+
+    //    TODO
+    public void updateRestaurantInfo(Restaurant restaurant) {
+        String sql = "UPDATE restaurant  SET name=?, email=?, password=?, phoneNumber=? WHERE id=? ";
+//        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//            preparedStatement.setString(1, restaurant.getCity());
+//            preparedStatement.setString(2, restaurant.getStreet());
+//            preparedStatement.setString(3, restaurant.getNumber());
+//            preparedStatement.setInt(4, restaurant.getId());
+//            preparedStatement.executeUpdate();
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+    }
+
+    public void updateRestaurantAddress(Address address) {
+
+    }
+
+    public void printAll() {
+        String sql = "SELECT * FROM restaurant c " +
+                "JOIN address a ON a.ID = c.addressID ";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt(1) + " | " + resultSet.getString(2) + " | " +
+                        resultSet.getString(3) + " | " + resultSet.getString(4) + " | "
+                        + resultSet.getString(5) + " | " + resultSet.getInt(6) + " | "
+                        + resultSet.getString(7) + " | " + resultSet.getString(8) + " | " + resultSet.getString(9)
+                        + " | " + resultSet.getString(10));
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

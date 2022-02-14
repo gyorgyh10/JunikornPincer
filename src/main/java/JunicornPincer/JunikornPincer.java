@@ -30,10 +30,10 @@ public class JunikornPincer {
             ordersRepository.createOrdersConnectorTable();
 //            addressRepository.insertAddress(address1);
 //            customerRepository.insertCustomer(customer1);
-            Address address=addressRepository.searchById(2);
-            address.setStreet("Pillangó utca");
-            addressRepository.updateById(address);
-            addressRepository.printAll();
+//            Address address=addressRepository.searchById(2);
+//            address.setStreet("Pillangó utca");
+            customerRepository.printAll();
+            System.out.println(customerRepository.searchById(3));
 
         } catch (SQLException e) {
             e.printStackTrace();
