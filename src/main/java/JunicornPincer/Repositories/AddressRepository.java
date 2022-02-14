@@ -1,9 +1,8 @@
 package JunicornPincer.Repositories;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import JunicornPincer.Address;
+
+import java.sql.*;
 
 public class AddressRepository implements AutoCloseable {
 
@@ -33,6 +32,30 @@ public class AddressRepository implements AutoCloseable {
             e.printStackTrace();
         }
     }
+
+    public void insertAddress(Address address){
+        String sql="INSERT INTO address (city, street, number) " +
+                "VALUES (?,?,?)";
+        try (PreparedStatement preparedStatement= connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)){
+            preparedStatement.setString(1, address.getCity());
+            preparedStatement.setString(2, address.getStreet());
+            preparedStatement.setString(3, address.getNumber());
+
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+
+            address.setId(generatedKey);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+    }
+
+
 
     @Override
     public void close() throws SQLException {

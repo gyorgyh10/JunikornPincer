@@ -5,32 +5,26 @@ import java.util.List;
 public class Food {
     private int id;
     private String name;
-    private FoodCategories foodCategories;
+    private FoodCategory foodCategory;
     private int price;
     private List<Integer> ratings;                  //SQLben JOIN (food->rating)
-    private int restaurantID;                   //SQLben FOREIGN KEY.
+    private Restaurant restaurant;                   //SQLben FOREIGN KEY.
 
-
-    public Food(int id, String name, FoodCategories foodCategories, int price) {
+    public Food(int id, String name, FoodCategory foodCategory, int price, List<Integer> ratings, Restaurant restaurant) {
         this.id = id;
         this.name = name;
-        this.foodCategories = foodCategories;
+        this.foodCategory = foodCategory;
         this.price = price;
+        this.ratings = ratings;
+        this.restaurant = restaurant;
     }
 
-    public Food(String name, FoodCategories foodCategories, int price) {
+    public Food(String name, FoodCategory foodCategory, int price, List<Integer> ratings, Restaurant restaurant) {
         this.name = name;
-        this.foodCategories = foodCategories;
+        this.foodCategory = foodCategory;
         this.price = price;
-    }
-
-    public double foodRatingsAvg(List<Integer> ratings){
-        double avg=0;
-        for (Integer rating : ratings) {
-            avg+=rating;
-        }
-        avg=avg/ ratings.size();
-        return avg;
+        this.ratings = ratings;
+        this.restaurant = restaurant;
     }
 
     public int getId() {
@@ -49,12 +43,12 @@ public class Food {
         this.name = name;
     }
 
-    public FoodCategories getFoodCategories() {
-        return foodCategories;
+    public FoodCategory getFoodCategory() {
+        return foodCategory;
     }
 
-    public void setFoodCategories(FoodCategories foodCategories) {
-        this.foodCategories = foodCategories;
+    public void setFoodCategory(FoodCategory foodCategory) {
+        this.foodCategory = foodCategory;
     }
 
     public int getPrice() {
@@ -71,5 +65,13 @@ public class Food {
 
     public void setRatings(List<Integer> ratings) {
         this.ratings = ratings;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

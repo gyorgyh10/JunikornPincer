@@ -1,6 +1,11 @@
 package JunicornPincer;
 
 public class Address {
+//
+//    {
+//        id = id + 1;
+//    }
+
     private int id;
     private String city;
     private String street;

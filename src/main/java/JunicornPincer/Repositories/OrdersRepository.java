@@ -1,9 +1,8 @@
 package JunicornPincer.Repositories;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import JunicornPincer.Orders;
+
+import java.sql.*;
 
 public class OrdersRepository implements AutoCloseable {
     Connection connection;
@@ -50,6 +49,27 @@ public class OrdersRepository implements AutoCloseable {
             e.printStackTrace();
         }
     }
+
+    public void insertOrders(Orders orders) {
+        String sql = "INSERT INTO orders (date, CustomerID) " +
+                "VALUES (?,?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setDate(1, orders.getDate());
+            preparedStatement.setInt(2, orders.getCustomer().getId());
+
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+
+            orders.setId(generatedKey);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
 
     public void dateToSQL() {
     }

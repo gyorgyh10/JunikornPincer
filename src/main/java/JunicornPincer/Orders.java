@@ -1,27 +1,26 @@
 package JunicornPincer;
 
+import java.sql.Date;
 import java.util.List;
 
 public class Orders {
     private int id;
-    private String date;
+    private Date date;
     private List<Food> foodList;
-
-    private int customerId;
+    private Customer customer;
     private int estimatedWaitingTime;
 
-
-    public Orders(String date, List<Food> foodList, int customerId) {
-        this.date = date;
-        this.foodList = foodList;
-        this.customerId = customerId;
-    }
-
-    public Orders(int id, String date, List<Food> foodList, int customerId) {
+    public Orders(int id, Date date, List<Food> foodList, Customer customer) {
         this.id = id;
         this.date = date;
         this.foodList = foodList;
-        this.customerId = customerId;
+        this.customer = customer;
+    }
+
+    public Orders(Date date, List<Food> foodList, Customer customer) {
+        this.date = date;
+        this.foodList = foodList;
+        this.customer = customer;
     }
 
     public int getId() {
@@ -32,11 +31,11 @@ public class Orders {
         this.id = id;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -46,6 +45,14 @@ public class Orders {
 
     public void setFoodList(List<Food> foodList) {
         this.foodList = foodList;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public int getEstimatedWaitingTime() {

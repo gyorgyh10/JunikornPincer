@@ -1,9 +1,9 @@
 package JunicornPincer.Repositories;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import JunicornPincer.Food;
+import JunicornPincer.Restaurant;
+
+import java.sql.*;
 
 public class RestaurantRepository implements AutoCloseable {
     Connection connection;
@@ -32,6 +32,28 @@ public class RestaurantRepository implements AutoCloseable {
         } catch (
                 SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void insertRestaurant(Restaurant restaurant){
+        String sql="INSERT INTO restaurant (name, addressID, phoneNumber, canDeliver) " +
+                "VALUES (?,?,?,?)";
+        try (PreparedStatement preparedStatement= connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)){
+            preparedStatement.setString(1, restaurant.getName());
+            preparedStatement.setInt(2, restaurant.getAddress().getId());
+            preparedStatement.setString(3, restaurant.getPhoneNumber());
+            preparedStatement.setBoolean(4, restaurant.isCanDeliver());
+
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+
+            restaurant.setId(generatedKey);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

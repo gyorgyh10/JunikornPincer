@@ -1,6 +1,6 @@
 package JunicornPincer;
 
-public enum FoodCategories {
+public enum FoodCategory {
     ALKOHOLMENTES_ITAL,
     ALKOHOLOS_ITAL,
     DESSZERT,
@@ -14,5 +14,4 @@ public enum FoodCategories {
     HAMBURGER,
     SZÓSZ_ÖNTET,
     EGZOTIKUS,
-
 }
