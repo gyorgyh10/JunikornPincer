@@ -7,23 +7,21 @@ public class Food {
     private String name;
     private FoodCategory foodCategory;
     private int price;
-    private List<Integer> ratings;                  //SQLben JOIN (food->rating)
+//    private List<Integer> ratings;                  //SQLben JOIN (food->rating)
     private Restaurant restaurant;                   //SQLben FOREIGN KEY.
 
-    public Food(int id, String name, FoodCategory foodCategory, int price, List<Integer> ratings, Restaurant restaurant) {
+    public Food(int id, String name, FoodCategory foodCategory, int price, Restaurant restaurant) {
         this.id = id;
         this.name = name;
         this.foodCategory = foodCategory;
         this.price = price;
-        this.ratings = ratings;
         this.restaurant = restaurant;
     }
 
-    public Food(String name, FoodCategory foodCategory, int price, List<Integer> ratings, Restaurant restaurant) {
+    public Food(String name, FoodCategory foodCategory, int price, Restaurant restaurant) {
         this.name = name;
         this.foodCategory = foodCategory;
         this.price = price;
-        this.ratings = ratings;
         this.restaurant = restaurant;
     }
 
@@ -59,13 +57,13 @@ public class Food {
         this.price = price;
     }
 
-    public List<Integer> getRatings() {
-        return ratings;
-    }
+//    public List<Integer> getRatings() {
+//        return ratings;
+//    }
 
-    public void setRatings(List<Integer> ratings) {
-        this.ratings = ratings;
-    }
+//    public void setRatings(List<Integer> ratings) {
+//        this.ratings = ratings;
+//    }
 
     public Restaurant getRestaurant() {
         return restaurant;
@@ -82,8 +80,8 @@ public class Food {
                 ", name='" + name + '\'' +
                 ", foodCategory=" + foodCategory +
                 ", price=" + price +
-                ", ratings=" + ratings +
-                ", restaurant=" + restaurant +
-                '}';
+//                ", ratings=" + ratings +
+                ", restaurant=" + restaurant.getName() +
+                '}' +" \n";
     }
 }

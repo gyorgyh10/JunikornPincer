@@ -29,12 +29,18 @@ public class JunikornPincer {
             ordersRepository.createOrdersTable();
             ordersRepository.createOrdersConnectorTable();
 //            foodRepository.uploadFoodCategories();
-            customerRepository.printAll();
-            Address address2 = new Address ("Makó", "Fő utca", "15");
-            Restaurant restaurant = new Restaurant("Zöldfa Étterem", address2, "333-3333", false);
+//            customerRepository.printAll();
+//            customerRepository.insertCustomer(customer1);
+//            Address address2 = new Address ("Makó", "Fő utca", "15");
+//            Restaurant restaurant = new Restaurant("Zöldfa Étterem", address2, "333-3333", false);
 //            restaurantRepository.insertRestaurant(restaurant);
-            System.out.println(restaurantRepository.searchById(1));
-
+            Restaurant restaurant = restaurantRepository.searchById(1);
+            System.out.println(restaurant);
+            restaurant.setPhoneNumber("123-345-456");
+            restaurant.getAddress().setStreet("Bor utca");
+//            System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
+            restaurantRepository.updateRestaurantInfo(restaurant);
+            System.out.println(restaurant);
         } catch (SQLException e) {
             e.printStackTrace();
         }

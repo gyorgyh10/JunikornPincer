@@ -1,9 +1,13 @@
 package JunicornPincer.Repositories;
 
 import JunicornPincer.Address;
+import JunicornPincer.Food;
+import JunicornPincer.FoodCategory;
 import JunicornPincer.Restaurant;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RestaurantRepository implements AutoCloseable {
     Connection connection;
@@ -98,24 +102,55 @@ public class RestaurantRepository implements AutoCloseable {
         return restaurant;
     }
 
+    public List<Food> allFoodsOfRestaurant(Restaurant restaurant){
+        List<Food> foodList = new ArrayList<>();
+        String sql = "SELECT f.id, f.name, f.foodCategory, f.price " +
+                "FROM food f " +
+                "JOIN restaurant r ON f.restaurantID=r.id " +
+                "WHERE r.id=?";
+        try(PreparedStatement preparedStatement=connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1,restaurant.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+///            1    2       3             4         5
+//            id, name, foodCategory, price, restaurantID
+            while (resultSet.next()){
+                Food food=new Food(resultSet.getInt(1), resultSet.getString(2),
+                        FoodCategory.values()[resultSet.getInt(3)-1],
+                        resultSet.getInt(4),restaurant);
+                foodList.add(food);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return foodList;
+    }
 
-    //    TODO
     public void updateRestaurantInfo(Restaurant restaurant) {
-        String sql = "UPDATE restaurant  SET name=?, email=?, password=?, phoneNumber=? WHERE id=? ";
-//        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-//            preparedStatement.setString(1, restaurant.getCity());
-//            preparedStatement.setString(2, restaurant.getStreet());
-//            preparedStatement.setString(3, restaurant.getNumber());
-//            preparedStatement.setInt(4, restaurant.getId());
-//            preparedStatement.executeUpdate();
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
+        String sql = "UPDATE restaurant  SET id=?, name=?, addressID=?, phoneNumber=?, canDeliver=? WHERE id=? ";
+        String sql2 = "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             PreparedStatement preparedStatement2 = connection.prepareStatement(sql2)) {
+            preparedStatement.setInt(1, restaurant.getId());
+            preparedStatement.setString(2, restaurant.getName());
+            preparedStatement.setInt(3, restaurant.getAddress().getId());
+            preparedStatement.setString(4, restaurant.getPhoneNumber());
+            preparedStatement.setBoolean(5, restaurant.isCanDeliver());
+            preparedStatement.setInt(6, restaurant.getId());
+
+            preparedStatement.executeUpdate();
+
+            preparedStatement2.setString(1, restaurant.getAddress().getCity());
+            preparedStatement2.setString(2, restaurant.getAddress().getStreet());
+            preparedStatement2.setString(3, restaurant.getAddress().getNumber());
+            preparedStatement2.setInt(4, restaurant.getAddress().getId());
+            preparedStatement2.executeUpdate();
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
-    public void updateRestaurantAddress(Address address) {
-
-    }
 
     public void printAll() {
         String sql = "SELECT * FROM restaurant c " +
