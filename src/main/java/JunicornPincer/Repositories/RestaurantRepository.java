@@ -126,10 +126,9 @@ public class RestaurantRepository implements AutoCloseable {
     }
 
     public void updateRestaurantInfo(Restaurant restaurant) {
-        String sql = "UPDATE restaurant  SET id=?, name=?, addressID=?, phoneNumber=?, canDeliver=? WHERE id=? ";
-        String sql2 = "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             PreparedStatement preparedStatement2 = connection.prepareStatement(sql2)) {
+        String sql = "UPDATE restaurant  SET id=?, name=?, addressID=?, phoneNumber=?, canDeliver=? WHERE id=? " +
+                     "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, restaurant.getId());
             preparedStatement.setString(2, restaurant.getName());
             preparedStatement.setInt(3, restaurant.getAddress().getId());
@@ -137,13 +136,12 @@ public class RestaurantRepository implements AutoCloseable {
             preparedStatement.setBoolean(5, restaurant.isCanDeliver());
             preparedStatement.setInt(6, restaurant.getId());
 
-            preparedStatement.executeUpdate();
 
-            preparedStatement2.setString(1, restaurant.getAddress().getCity());
-            preparedStatement2.setString(2, restaurant.getAddress().getStreet());
-            preparedStatement2.setString(3, restaurant.getAddress().getNumber());
-            preparedStatement2.setInt(4, restaurant.getAddress().getId());
-            preparedStatement2.executeUpdate();
+            preparedStatement.setString(7, restaurant.getAddress().getCity());
+            preparedStatement.setString(8, restaurant.getAddress().getStreet());
+            preparedStatement.setString(9, restaurant.getAddress().getNumber());
+            preparedStatement.setInt(10, restaurant.getAddress().getId());
+            preparedStatement.executeUpdate();
 
 
         } catch (SQLException throwables) {

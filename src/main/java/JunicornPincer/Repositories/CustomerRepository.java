@@ -101,23 +101,23 @@ public class CustomerRepository implements AutoCloseable {
 
 
     public void updateCustomerInfo(Customer customer) {
-        String sql = "UPDATE customer SET name=?, email=?, password=?, phoneNumber=? WHERE id=? ";
-        String sql2 = "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             PreparedStatement preparedStatement2 = connection.prepareStatement(sql2)) {
+        String sql = "UPDATE customer SET name=?, email=?, password=?, phoneNumber=? WHERE id=?; " +
+                        "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, customer.getName());
             preparedStatement.setString(2, customer.getEmail());
             preparedStatement.setString(3, customer.getPassword());
             preparedStatement.setString(4, customer.getPhoneNumber());
             preparedStatement.setInt(5, customer.getId());
+
+
+            preparedStatement.setString(6, customer.getAddress().getCity());
+            preparedStatement.setString(7, customer.getAddress().getStreet());
+            preparedStatement.setString(8, customer.getAddress().getNumber());
+            preparedStatement.setInt(9, customer.getAddress().getId());
+
             preparedStatement.executeUpdate();
-
-            preparedStatement2.setString(1, customer.getAddress().getCity());
-            preparedStatement2.setString(2, customer.getAddress().getStreet());
-            preparedStatement2.setString(3, customer.getAddress().getNumber());
-            preparedStatement2.setInt(4, customer.getAddress().getId());
-            preparedStatement2.executeUpdate();
-
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();

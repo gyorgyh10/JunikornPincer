@@ -28,7 +28,7 @@ public class JunikornPincer {
             foodRepository.createFoodTable();
             ordersRepository.createOrdersTable();
             ordersRepository.createOrdersConnectorTable();
-//            foodRepository.uploadFoodCategories();
+//            foodRepository.uploadFoodCategories();                                //mindig csak 1x kell lefuttatni
 //            customerRepository.printAll();
 //            customerRepository.insertCustomer(customer1);
 //            Address address2 = new Address ("Makó", "Fő utca", "15");
@@ -41,10 +41,17 @@ public class JunikornPincer {
 //            System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
 //            restaurantRepository.updateRestaurantInfo(restaurant);
 //            System.out.println(restaurant);
-            restaurantRepository.printAll();
-            Food food = foodRepository.searchById(2);
-            foodRepository.updateFoodInfo(food);
-            foodRepository.printAll();
+//            restaurantRepository.printAll();
+//            Food food = foodRepository.searchById(2);
+//            foodRepository.updateFoodInfo(food);
+//            foodRepository.printAll();
+            customerRepository.printAll();
+            Customer customer = customerRepository.searchById(3);
+            customer.setName("Károly");
+            customer.getAddress().setCity("Budapest");
+            System.out.println();
+           customerRepository.updateCustomerInfo(customer);
+            customerRepository.printAll();
 
         } catch (SQLException e) {
             e.printStackTrace();
