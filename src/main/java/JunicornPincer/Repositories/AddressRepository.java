@@ -33,7 +33,7 @@ public class AddressRepository implements AutoCloseable {
         }
     }
 
-    public void insertAddress(Address address) {
+    public void insertAddress(Address address) {                                    //tudjuk h nem használjuk
         String sql = "INSERT INTO address (city, street, number) " +
                 "VALUES (?,?,?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

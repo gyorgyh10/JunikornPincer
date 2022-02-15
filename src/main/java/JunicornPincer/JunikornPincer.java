@@ -19,21 +19,21 @@ public class JunikornPincer {
              FoodRepository foodRepository = new FoodRepository();
              OrdersRepository ordersRepository = new OrdersRepository()) {
             Address address1 = new Address("Szeged", "Kecske utca", "19");
-            Customer customer1 = new Customer("A", "email", "password", "222-2222"
+            Customer customer1 = new Customer("B", "email@gmail.com", "password", "222-2222"
                     , address1);
             addressRepository.createAddressTable();
             customerRepository.createCustomerTable();
             restaurantRepository.createRestaurantTable();
-            foodRepository.createFoodCategoriesTable();
+            foodRepository.createFoodCategoryTable();
             foodRepository.createFoodTable();
             ordersRepository.createOrdersTable();
             ordersRepository.createOrdersConnectorTable();
-//            addressRepository.insertAddress(address1);
-//            customerRepository.insertCustomer(customer1);
-//            Address address=addressRepository.searchById(2);
-//            address.setStreet("Pillangó utca");
+//            foodRepository.uploadFoodCategories();
             customerRepository.printAll();
-            System.out.println(customerRepository.searchById(3));
+            Address address2 = new Address ("Makó", "Fő utca", "15");
+            Restaurant restaurant = new Restaurant("Zöldfa Étterem", address2, "333-3333", false);
+//            restaurantRepository.insertRestaurant(restaurant);
+            System.out.println(restaurantRepository.searchById(1));
 
         } catch (SQLException e) {
             e.printStackTrace();

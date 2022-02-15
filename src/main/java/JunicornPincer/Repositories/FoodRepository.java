@@ -18,9 +18,9 @@ public class FoodRepository implements AutoCloseable {
         }
     }
 
-    public void createFoodCategoriesTable() {
+    public void createFoodCategoryTable() {
         try {
-            String str = "CREATE TABLE IF NOT EXISTS FoodCategories (" +
+            String str = "CREATE TABLE IF NOT EXISTS FoodCategory (" +
                     "id INT PRIMARY KEY AUTO_INCREMENT, " +
                     "name VARCHAR (255) NOT NULL); ";
 

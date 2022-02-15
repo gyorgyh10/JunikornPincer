@@ -37,16 +37,15 @@ public class CustomerRepository implements AutoCloseable {
     }
 
     public void insertCustomer(Customer customer) {
-        String sql = "INSERT INTO customer (name, email, password, phoneNumber, addressID) " +
+        String sql = "INSERT INTO address (city, street, number) " +
+                "VALUES (?,?,?)";
+        String sql2 = "INSERT INTO customer (name, email, password, phoneNumber, addressID) " +
                 "VALUES (?,?,?,?,?)";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, customer.getName());
-            preparedStatement.setString(2, customer.getEmail());
-            preparedStatement.setString(3, customer.getPassword());
-            preparedStatement.setString(4, customer.getPhoneNumber());
-
-            preparedStatement.setInt(5, customer.getAddress().getId());
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement preparedStatement2 = connection.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, customer.getAddress().getCity());
+            preparedStatement.setString(2, customer.getAddress().getStreet());
+            preparedStatement.setString(3, customer.getAddress().getNumber());
 
             preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -54,9 +53,25 @@ public class CustomerRepository implements AutoCloseable {
             if (rs.next()) {
                 generatedKey = rs.getInt(1);
             }
+            customer.getAddress().setId(generatedKey);
 
-//            System.out.println("Inserted record's ID: " + generatedKey);
-            customer.setId(generatedKey);
+            //kezdődik a customer:
+            preparedStatement2.setString(1, customer.getName());
+            preparedStatement2.setString(2, customer.getEmail());
+            preparedStatement2.setString(3, customer.getPassword());
+            preparedStatement2.setString(4, customer.getPhoneNumber());
+            preparedStatement2.setInt(5, customer.getAddress().getId());
+
+            preparedStatement2.executeUpdate();
+
+            ResultSet rs2 = preparedStatement.getGeneratedKeys();
+            int generatedKey2 = 0;
+            if (rs2.next()) {
+                generatedKey2 = rs2.getInt(1);
+            }
+
+            customer.setId(generatedKey2);
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -84,22 +99,29 @@ public class CustomerRepository implements AutoCloseable {
         return customer;
     }
 
-    //    TODO
+
     public void updateCustomerInfo(Customer customer) {
-        String sql = "UPDATE customer  SET name=?, email=?, password=?, phoneNumber=? WHERE id=? ";
-//        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-//            preparedStatement.setString(1, customer.getCity());
-//            preparedStatement.setString(2, customer.getStreet());
-//            preparedStatement.setString(3, customer.getNumber());
-//            preparedStatement.setInt(4, customer.getId());
-//            preparedStatement.executeUpdate();
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-    }
+        String sql = "UPDATE customer SET name=?, email=?, password=?, phoneNumber=? WHERE id=? ";
+        String sql2 = "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             PreparedStatement preparedStatement2 = connection.prepareStatement(sql2)) {
+            preparedStatement.setString(1, customer.getName());
+            preparedStatement.setString(2, customer.getEmail());
+            preparedStatement.setString(3, customer.getPassword());
+            preparedStatement.setString(4, customer.getPhoneNumber());
+            preparedStatement.setInt(5, customer.getId());
+            preparedStatement.executeUpdate();
 
-    public void updateCustomerAddress(Address address) {
+            preparedStatement2.setString(1, customer.getAddress().getCity());
+            preparedStatement2.setString(2, customer.getAddress().getStreet());
+            preparedStatement2.setString(3, customer.getAddress().getNumber());
+            preparedStatement2.setInt(4, customer.getAddress().getId());
+            preparedStatement2.executeUpdate();
 
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public void printAll() {

@@ -6,7 +6,7 @@ import java.util.List;
 public class Orders {
     private int id;
     private Date date;
-    private List<Food> foodList;
+    private List<Food> foodList;                    //ide majd talán tényleg kell IDEIGLENES foodlist, máshova list nem kell
     private Customer customer;
     private int estimatedWaitingTime;
 

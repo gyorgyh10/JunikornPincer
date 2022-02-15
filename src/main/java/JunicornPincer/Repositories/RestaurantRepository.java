@@ -36,13 +36,15 @@ public class RestaurantRepository implements AutoCloseable {
     }
 
     public void insertRestaurant(Restaurant restaurant) {
-        String sql = "INSERT INTO restaurant (name, addressID, phoneNumber, canDeliver) " +
+        String sql = "INSERT INTO address (city, street, number) " +
+                "VALUES (?,?,?)";
+        String sql2 = "INSERT INTO restaurant (name, addressID, phoneNumber, canDeliver) " +
                 "VALUES (?,?,?,?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, restaurant.getName());
-            preparedStatement.setInt(2, restaurant.getAddress().getId());
-            preparedStatement.setString(3, restaurant.getPhoneNumber());
-            preparedStatement.setBoolean(4, restaurant.isCanDeliver());
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement preparedStatement2 = connection.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, restaurant.getAddress().getCity());
+            preparedStatement.setString(2, restaurant.getAddress().getStreet());
+            preparedStatement.setString(3, restaurant.getAddress().getNumber());
 
             preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -50,32 +52,52 @@ public class RestaurantRepository implements AutoCloseable {
             if (rs.next()) {
                 generatedKey = rs.getInt(1);
             }
+            restaurant.getAddress().setId(generatedKey);
 
-            restaurant.setId(generatedKey);
+            //innentől restaurant
+
+
+            preparedStatement2.setString(1, restaurant.getName());
+            preparedStatement2.setInt(2, restaurant.getAddress().getId());
+            preparedStatement2.setString(3, restaurant.getPhoneNumber());
+            preparedStatement2.setBoolean(4, restaurant.isCanDeliver());
+
+            preparedStatement2.executeUpdate();
+            ResultSet rs2 = preparedStatement2.getGeneratedKeys();
+            int generatedKey2 = 0;
+            if (rs2.next()) {
+                generatedKey2 = rs2.getInt(1);
+            }
+
+            restaurant.setId(generatedKey2);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-//    public Restaurant searchById(int id) {
-//        Restaurant restaurant = new Restaurant();                     TODO
-//        String sql = "SELECT * FROM restaurant r" +
-//                "LEFT JOIN food f ON f.restaurantID = r.ID " +
-//                "WHERE r.id = ?";
-//        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-//            preparedStatement.setInt(1, id);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()) {
-//                restaurant = new Restaurant(id, resultSet.getString("c_name"), resultSet.getString("c_email"),
-//                        resultSet.getString("c_password"), resultSet.getString("c_phoneNumber"),
-//                        new Address(resultSet.getInt("c_addressID"), resultSet.getString("a_city"),
-//                                resultSet.getString("a_street"), resultSet.getString("a_number")));
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//        return restaurant;
-//    }
+    public Restaurant searchById(int id) {
+        Restaurant restaurant = null;
+        String sql = "SELECT * FROM restaurant r " +
+                "JOIN address a ON a.id =r.addressID " +
+                "WHERE r.id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                //1     2       3           4           5       6    7      8       9
+                //id, name, addressID, phoneNumber, canDeliver, id, city, street, number
+                Address address = new Address(resultSet.getInt(6), resultSet.getString(7),
+                        resultSet.getString(8), resultSet.getString(9));
+                restaurant = new Restaurant(1, resultSet.getString(2),
+                        address, resultSet.getString(4),
+                        resultSet.getBoolean(5));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return restaurant;
+    }
+
 
     //    TODO
     public void updateRestaurantInfo(Restaurant restaurant) {
