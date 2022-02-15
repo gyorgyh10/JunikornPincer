@@ -153,17 +153,18 @@ public class RestaurantRepository implements AutoCloseable {
 
 
     public void printAll() {
-        String sql = "SELECT * FROM restaurant c " +
-                "JOIN address a ON a.ID = c.addressID ";
+        String sql = "SELECT * FROM restaurant r " +
+                "JOIN address a ON a.ID = r.addressID ";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
+//                 1   2       (3)           4              5   (6)     7    8       9
+//                id, name, addressID, phoneNumber, canDeliver, id, city, street, number
                 System.out.println(resultSet.getInt(1) + " | " + resultSet.getString(2) + " | " +
-                        resultSet.getString(3) + " | " + resultSet.getString(4) + " | "
-                        + resultSet.getString(5) + " | " + resultSet.getInt(6) + " | "
-                        + resultSet.getString(7) + " | " + resultSet.getString(8) + " | " + resultSet.getString(9)
-                        + " | " + resultSet.getString(10));
+                        resultSet.getString(4) + " | " + resultSet.getBoolean(5) + " | "
+                        + resultSet.getString(7) + " | " + resultSet.getString(8) + " | " +
+                        resultSet.getString(9));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
