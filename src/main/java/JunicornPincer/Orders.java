@@ -6,9 +6,9 @@ import java.util.List;
 public class Orders {
     private int id;
     private Date date;
-    private List<Food> foodList;                    //ide majd talán tényleg kell IDEIGLENES foodlist, máshova list nem kell
+    private List<Food> foodList;
     private Customer customer;
-    private int estimatedWaitingTime;
+//    private int estimatedWaitingTime;
 
     public Orders(int id, Date date, List<Food> foodList, Customer customer) {
         this.id = id;
@@ -55,13 +55,13 @@ public class Orders {
         this.customer = customer;
     }
 
-    public int getEstimatedWaitingTime() {
-        return estimatedWaitingTime;
-    }
-
-    public void setEstimatedWaitingTime(int estimatedWaitingTime) {
-        this.estimatedWaitingTime = estimatedWaitingTime;
-    }
+//    public int getEstimatedWaitingTime() {
+//        return estimatedWaitingTime;
+//    }
+//
+//    public void setEstimatedWaitingTime(int estimatedWaitingTime) {
+//        this.estimatedWaitingTime = estimatedWaitingTime;
+//    }
 
     @Override
     public String toString() {
@@ -70,7 +70,7 @@ public class Orders {
                 ", date=" + date +
                 ", foodList=" + foodList +
                 ", customer=" + customer +
-                ", estimatedWaitingTime=" + estimatedWaitingTime +
+//                ", estimatedWaitingTime=" + estimatedWaitingTime +
                 '}';
     }
 }

@@ -56,14 +56,15 @@ public class JunikornPincer {
 //           customerRepository.updateCustomerInfo(customer);
 //            customerRepository.printAll();
 
-            Date date=new Date(123414);
-            List<Food> listFood= new ArrayList<>();
-            listFood.add(food);
-            listFood.add(food);
-            listFood.add(food1);
-
-                Orders orders= new Orders(date,listFood, customer);
-            ordersRepository.insertOrders(orders);
+//            Date date=new Date(123414);
+//            List<Food> listFood= new ArrayList<>();
+//            listFood.add(food);
+//            listFood.add(food);
+//            listFood.add(food1);
+//
+//                Orders orders= new Orders(date,listFood, customer);
+//            ordersRepository.insertOrders(orders);
+            System.out.println(ordersRepository.searchById(2));
         } catch (SQLException e) {
             e.printStackTrace();
         }

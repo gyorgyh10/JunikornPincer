@@ -96,7 +96,6 @@ public class Customer {
                 ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address=" + address +
-                ", ordersList=" + ordersList +
                 '}';
     }
 }
