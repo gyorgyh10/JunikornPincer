@@ -3,6 +3,8 @@ package JunicornPincer;
 import JunicornPincer.Repositories.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 public class JunikornPincer {
@@ -42,17 +44,26 @@ public class JunikornPincer {
 //            restaurantRepository.updateRestaurantInfo(restaurant);
 //            System.out.println(restaurant);
 //            restaurantRepository.printAll();
-//            Food food = foodRepository.searchById(2);
+            Food food = foodRepository.searchById(2);
+            Food food1 = foodRepository.searchById(1);
 //            foodRepository.updateFoodInfo(food);
 //            foodRepository.printAll();
             customerRepository.printAll();
-            Customer customer = customerRepository.searchById(3);
-            customer.setName("Károly");
-            customer.getAddress().setCity("Budapest");
-            System.out.println();
-           customerRepository.updateCustomerInfo(customer);
-            customerRepository.printAll();
+            Customer customer = customerRepository.searchById(1);
+//            customer.setName("Károly");
+//            customer.getAddress().setCity("Budapest");
+//            System.out.println();
+//           customerRepository.updateCustomerInfo(customer);
+//            customerRepository.printAll();
 
+            Date date=new Date(123414);
+            List<Food> listFood= new ArrayList<>();
+            listFood.add(food);
+            listFood.add(food);
+            listFood.add(food1);
+
+                Orders orders= new Orders(date,listFood, customer);
+            ordersRepository.insertOrders(orders);
         } catch (SQLException e) {
             e.printStackTrace();
         }

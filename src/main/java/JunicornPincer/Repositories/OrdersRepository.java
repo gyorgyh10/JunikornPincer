@@ -1,8 +1,10 @@
 package JunicornPincer.Repositories;
 
+import JunicornPincer.Food;
 import JunicornPincer.Orders;
 
 import java.sql.*;
+import java.util.List;
 
 public class OrdersRepository implements AutoCloseable {
     Connection connection;
@@ -65,6 +67,22 @@ public class OrdersRepository implements AutoCloseable {
             }
 
             orders.setId(generatedKey);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+//        id, OrdersID, FoodID
+        List<Food> foodList = orders.getFoodList();
+        String sql2 = "INSERT INTO ordersconnector (ordersID, FoodID) " +
+                "VALUES (?,?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql2)) {
+
+            for (int i = 0; i < foodList.size(); i++) {
+                preparedStatement.setInt(1, orders.getId());
+                preparedStatement.setInt(2, foodList.get(i).getId());
+                preparedStatement.addBatch();
+            }
+
+            preparedStatement.executeBatch();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
