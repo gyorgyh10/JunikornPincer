@@ -92,7 +92,7 @@ public class RestaurantRepository implements AutoCloseable {
                 //id, name, addressID, phoneNumber, canDeliver, id, city, street, number
                 Address address = new Address(resultSet.getInt(6), resultSet.getString(7),
                         resultSet.getString(8), resultSet.getString(9));
-                restaurant = new Restaurant(1, resultSet.getString(2),
+                restaurant = new Restaurant(id, resultSet.getString(2),
                         address, resultSet.getString(4),
                         resultSet.getBoolean(5));
             }
