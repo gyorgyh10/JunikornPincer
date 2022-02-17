@@ -24,9 +24,7 @@ public class JunikornPincer {
 //            Database database = new Database();
 //            database.init();
             Junikorn();
-            customerRepository.printAll();
-            register(customerRepository);
-            customerRepository.printAll();
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,40 +34,50 @@ public class JunikornPincer {
 
     private static Customer register(CustomerRepository customerRepository) {
         Customer customer = null;
+        boolean good = false;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter your email address: ");
-        String email = scanner.nextLine();
-        if (customerRepository.searchByEmail(email)) {
-            System.out.println("This email is already registered! Try again!");
-            register(customerRepository);
-        }
-        System.out.println("Please enter password: ");
-        String password = scanner.nextLine();
-        System.out.println("Please enter your name:");
-        String name = scanner.nextLine();
-        System.out.println("Please enter your phone number:");
-        String phoneNumber = scanner.nextLine();
-        System.out.println("___________ADRESS:____________");
-        System.out.println("Please enter your city:");
-        String city = scanner.nextLine();
-        System.out.println("Please enter your street:");
-        String street = scanner.nextLine();
-        System.out.println("Please enter your number:");
-        String number = scanner.nextLine();
-        customer = new Customer(name, email, password, phoneNumber, new Address(city, street, number));
-        System.out.println("Is everything correct?(Y/N)");
-        System.out.println(customer);
-        String answer = scanner.nextLine();
-        if (answer.equalsIgnoreCase("N")) {
-            System.out.println("Start again!");
-            register(customerRepository);
+        while (!good) {
+            System.out.println("Please enter your email address: ");
+            String email = scanner.nextLine();
+            while (customerRepository.searchByEmail(email)) {
+                System.out.println("This email is already registered! Try again!");
+                System.out.println("Please enter your email address: ");
+                email = scanner.nextLine();
+            }
+            System.out.println("Please enter password: ");
+            String password = scanner.nextLine();
+            System.out.println("Please enter your name:");
+            String name = scanner.nextLine();
+            System.out.println("Please enter your phone number:");
+            String phoneNumber = scanner.nextLine();
+            System.out.println("___________ADDRESS:____________");
+            System.out.println("Please enter your city:");
+            String city = scanner.nextLine();
+            System.out.println("Please enter your street:");
+            String street = scanner.nextLine();
+            System.out.println("Please enter your number:");
+            String number = scanner.nextLine();
+            customer = new Customer(name, email, password, phoneNumber, new Address(city, street, number));
+            System.out.println("Is everything correct?(Y/N)");
+            System.out.println(customer);
+            String answer = scanner.nextLine();
+            while ((!answer.equalsIgnoreCase("Y")) && (!answer.equalsIgnoreCase("N"))) {
+                System.out.println("Wrong letter! Try again!");
+                answer = scanner.nextLine();
+            }
+            if (answer.equalsIgnoreCase("Y")) {
+                good = true;
+            }
         }
         int id = customerRepository.insertCustomer(customer);
         customer.setId(id);
         return customer;
     }
 
-    private static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository) throws InterruptedException {
+
+
+    private static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository) throws
+            InterruptedException {
         Scanner scanner = new Scanner(System.in);
         int menuNumber = 0;
         boolean finish = false;
