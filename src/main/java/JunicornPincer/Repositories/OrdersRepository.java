@@ -25,8 +25,8 @@ public class OrdersRepository implements AutoCloseable {
                     "id INT PRIMARY KEY AUTO_INCREMENT, " +
                     "OrdersID INT NOT NULL, " +
                     "FoodID INT NOT NULL, " +
-                    "FOREIGN KEY(OrdersID) REFERENCES Food(id), " +
-                    "FOREIGN KEY(FoodID) REFERENCES Orders(id)) ";
+                    "FOREIGN KEY(OrdersID) REFERENCES Orders(id), " +
+                    "FOREIGN KEY(FoodID) REFERENCES Food(id)) ";
             Statement statement = connection.createStatement();
             statement.execute(str);
 
@@ -60,6 +60,7 @@ public class OrdersRepository implements AutoCloseable {
             preparedStatement.setInt(2, orders.getCustomer().getId());
 
             preparedStatement.executeUpdate();
+
             ResultSet rs = preparedStatement.getGeneratedKeys();
             int generatedKey = 0;
             if (rs.next()) {
@@ -67,6 +68,7 @@ public class OrdersRepository implements AutoCloseable {
             }
 
             orders.setId(generatedKey);
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -78,10 +80,10 @@ public class OrdersRepository implements AutoCloseable {
             for (int i = 0; i < foodList.size(); i++) {
                 preparedStatement.setInt(1, orders.getId());
                 preparedStatement.setInt(2, foodList.get(i).getId());
-                preparedStatement.addBatch();
+                preparedStatement.executeUpdate();
             }
 
-            preparedStatement.executeBatch();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
