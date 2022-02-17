@@ -2,7 +2,9 @@ package JunicornPincer;
 
 import JunicornPincer.Repositories.*;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -25,10 +27,122 @@ public class JunikornPincer {
 //            database.init();
             Junikorn();
 
+            if (login(customerRepository) == null) {
+                everythingMenu(restaurantRepository, foodRepository);
+            } else {
+                Customer customer = login(customerRepository);
+                loggedIn(customer, customerRepository, foodRepository, restaurantRepository, ordersRepository);
+            }
 
-        } catch (SQLException e) {
+        } catch (SQLException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void showLoggedInMenu() {
+        System.out.println();
+        System.out.println("Please select a menu number: ");
+        System.out.println("1 - Search food");
+        System.out.println("2 - Search Restaurants");
+        System.out.println("3 - Check your order list");
+        System.out.println("4 - Change your data");
+        System.out.println("5 - Exit");
+        System.out.println();
+    }
+
+    private static void loggedIn(Customer customer, CustomerRepository customerRepository, FoodRepository foodRepository,
+                                 RestaurantRepository restaurantRepository, OrdersRepository ordersRepository) {
+        Scanner scanner = new Scanner(System.in);
+        int menuNumber = 0;
+        boolean finish = false;
+        int totalPrice = 0;
+        List<Food> foodList = new ArrayList<>();
+        while (!finish) {
+            showLoggedInMenu();
+            menuNumber = scanInt(scanner);
+            if (menuNumber < 1 || menuNumber > 5) {
+                System.out.println("Wrong number, please enter a valid number! ");
+            }
+
+            switch (menuNumber) {
+                case 1:
+                    boolean case1finish = false;
+                    while (!case1finish) {
+                        System.out.println("    1 - show all food");
+                        System.out.println("    2 - show foods by food category");
+                        System.out.println("    3 - Back");
+                        System.out.println("    4 - Exit");
+                        Integer foodMenuNumber = scanInt(scanner);
+                        if (foodMenuNumber == 4) {
+                            case1finish = true;
+                            finish = true;
+                        }
+                        if (foodMenuNumber == 3) {
+                            case1finish = true;
+                        }
+
+                        if (foodMenuNumber == 1) {
+                            boolean foodnumber1finish = false;
+//                            while (!foodnumber1finish) {
+                            int foodId = -1;
+                            int quantity;
+
+                            System.out.println("Choose foods to order: ");
+                            foodRepository.printAll();                              //innentől ORDER FOOD
+                            System.out.println("To finish order press 0");
+                            while (foodId != 0) {
+                                System.out.println("Give foodID:");
+                                foodId = scanInt(scanner);
+                                System.out.println("Give quantity:");
+                                quantity = scanInt(scanner);
+                                Food food = foodRepository.searchById(foodId);
+                                for (int i = 1; i <= quantity; i++) {
+                                    foodList.add(food);
+                                    totalPrice += food.getPrice();
+                                }
+                            }
+                            System.out.println("Your order:");
+                            System.out.println(foodList);
+                            System.out.println("Total price: " + totalPrice);
+//                                    foodnumber1finish = true;
+//                                }
+                        }
+
+                    }
+                    break;
+
+                case 2:
+                    int restaurantNumber;
+                    System.out.println();
+                    System.out.println("Choose a restaurant:");
+                    System.out.println();
+                    restaurantRepository.printAll();
+                    restaurantNumber = scanInt(scanner);
+                    Restaurant restaurant = restaurantRepository.searchById(restaurantNumber);
+                    System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
+                    break;
+
+                case 3:
+                    System.out.println("Your order:");
+                    System.out.println(foodList);
+                    System.out.println("Total price: " + totalPrice);
+                    System.out.println("    1 - Finish order - Pay");
+                    System.out.println("    2 - Change order");
+                    System.out.println("    3 - Back");
+                    int case3menu = scanInt(scanner);
+                    if (case3menu == 1) {
+                        Date date= new Date(System.currentTimeMillis());
+                        ordersRepository.insertOrders(new Orders(date,foodList,customer));
+                    }
+
+                case 5:
+                    finish = true;
+                    break;
+
+            }
+
+        }
+
     }
 
 
@@ -39,7 +153,7 @@ public class JunikornPincer {
         while (!good) {
             System.out.println("Please enter your email address: ");
             String email = scanner.nextLine();
-            while (customerRepository.searchByEmail(email)) {
+            while (customerRepository.emailExists(email)) {
                 System.out.println("This email is already registered! Try again!");
                 System.out.println("Please enter your email address: ");
                 email = scanner.nextLine();
@@ -74,7 +188,34 @@ public class JunikornPincer {
         return customer;
     }
 
+    private static Customer login(CustomerRepository customerRepository) {
+        Customer customer = null;
 
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Please enter your email address: ");
+        String email = scanner.nextLine();
+        while (!customerRepository.emailExists(email)) {
+            System.out.println("This email is NOT registered! Please give an other!");
+            System.out.println("Please enter your email address: ");
+            email = scanner.nextLine();
+        }
+        System.out.println("Please enter password: ");
+        String password = scanner.nextLine();
+        int counter = 0;
+        customer = customerRepository.searchByEmail(email);
+        while (!customer.getPassword().equals(password) && counter < 3) {
+            System.out.println("Wrong password! Try again!");
+            password = scanner.nextLine();
+            counter++;
+        }
+        if (!customer.getPassword().equals(password)) {
+            System.out.println("Check your email for an other password.");
+            return null;
+        }
+
+        return customer;
+    }
 
     private static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository) throws
             InterruptedException {

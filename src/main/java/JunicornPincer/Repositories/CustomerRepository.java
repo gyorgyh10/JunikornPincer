@@ -100,8 +100,30 @@ public class CustomerRepository implements AutoCloseable {
         return customer;
     }
 
+    public Customer searchByEmail(String email) {
+        Customer customer = null;
+        String sql = "SELECT c.id AS c_id, c.name AS c_name, c.email AS c_email, c.password AS c_password, " +
+                "c.phoneNumber AS c_phoneNumber, c.addressID AS c_addressID, a.city AS a_city, " +
+                "a.street AS a_street, a.number AS a_number FROM customer c " +
+                "JOIN address a ON a.id =c.addressID " +
+                "WHERE c.email = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                customer = new Customer(resultSet.getInt("c_id"), resultSet.getString("c_name"),
+                        resultSet.getString("c_email"),
+                        resultSet.getString("c_password"), resultSet.getString("c_phoneNumber"),
+                        new Address(resultSet.getInt("c_addressID"), resultSet.getString("a_city"),
+                                resultSet.getString("a_street"), resultSet.getString("a_number")));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return customer;
+    }
 
-    public boolean searchByEmail(String email) {
+    public boolean emailExists(String email) {
         String sql = "SELECT email FROM customer c " +
                 "WHERE c.email = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
