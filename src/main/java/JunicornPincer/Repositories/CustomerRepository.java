@@ -36,7 +36,7 @@ public class CustomerRepository implements AutoCloseable {
         }
     }
 
-    public void insertCustomer(Customer customer) {
+    public int insertCustomer(Customer customer) {
         String sql = "INSERT INTO address (city, street, number) " +
                 "VALUES (?,?,?)";
         String sql2 = "INSERT INTO customer (name, email, password, phoneNumber, addressID) " +
@@ -75,6 +75,7 @@ public class CustomerRepository implements AutoCloseable {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        return customer.getId();
     }
 
     public Customer searchById(int id) {
@@ -99,6 +100,21 @@ public class CustomerRepository implements AutoCloseable {
         return customer;
     }
 
+
+    public boolean searchByEmail(String email) {
+        String sql = "SELECT email FROM customer c " +
+                "WHERE c.email = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
 
     public void updateCustomerInfo(Customer customer) {
         String sql = "UPDATE customer SET name=?, email=?, password=?, phoneNumber=? WHERE id=?; " +
