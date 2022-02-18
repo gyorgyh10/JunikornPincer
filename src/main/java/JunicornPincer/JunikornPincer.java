@@ -14,6 +14,10 @@ public class JunikornPincer {
     private List<Customer> customerList;
     private int deliveryPrice;
     private List<Orders> ordersList;
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+
 
     public static void main(String[] args) {
 
@@ -27,15 +31,16 @@ public class JunikornPincer {
 //            database.init();
             Junikorn();
             everythingMenu(restaurantRepository, foodRepository, customerRepository, ordersRepository);
-
+//            login(customerRepository);
+//            loggedIn();
 
         } catch (SQLException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+
     public static void showLoggedInMenu() {
-        System.out.println();
         System.out.println("Please select a menu number: ");
         System.out.println("1 - Search food");
         System.out.println("2 - Search Restaurants");
@@ -47,16 +52,18 @@ public class JunikornPincer {
     }
 
     public static void loggedIn(Customer customer, CustomerRepository customerRepository, FoodRepository foodRepository,
-                                 RestaurantRepository restaurantRepository, OrdersRepository ordersRepository) {
+                                RestaurantRepository restaurantRepository, OrdersRepository ordersRepository) {
         Scanner scanner = new Scanner(System.in);
         int menuNumber = 0;
         boolean finish = false;
         int totalPrice = 0;
         List<Food> foodList = new ArrayList<>();
         while (!finish) {
+            System.out.println("Name: " + ANSI_RED + customer.getName() +
+                    ANSI_RESET + "       email:" + ANSI_RED + customer.getEmail() + ANSI_RESET);
             showLoggedInMenu();
             menuNumber = scanInt(scanner);
-            if (menuNumber < 1 || menuNumber > 5) {
+            if (menuNumber < 1 || menuNumber > 6) {
                 System.out.println("Wrong number, please enter a valid number! ");
             }
 
@@ -64,8 +71,8 @@ public class JunikornPincer {
                 case 1:
                     boolean case1finish = false;
                     while (!case1finish) {
-                        System.out.println("    1 - show all food");
-                        System.out.println("    2 - show foods by food category");
+                        System.out.println("    1 - Show all food");
+                        System.out.println("    2 - Show foods by food category");
                         System.out.println("    3 - Back");
                         System.out.println("    4 - Exit");
                         Integer foodMenuNumber = scanInt(scanner);
@@ -89,9 +96,12 @@ public class JunikornPincer {
                             while (foodId != 0) {
                                 System.out.println("Give foodID:");
                                 foodId = scanInt(scanner);
+                                if (foodId == 0) {
+                                    break;
+                                }
                                 System.out.println("Give quantity:");
                                 quantity = scanInt(scanner);
-                                if (foodId!=0) {
+                                if (foodId != 0) {
                                     Food food = foodRepository.searchById(foodId);
                                     for (int i = 1; i <= quantity; i++) {
                                         foodList.add(food);
@@ -105,21 +115,89 @@ public class JunikornPincer {
                             case1finish = true;
                         }
 
+                        if (foodMenuNumber == 2) {
+                            int foodId;
+                            int quantity;
+                            boolean foodMenuNumber2finish = false;
+                            while (!foodMenuNumber2finish) {
+                                foodId = -1;
+                                foodRepository.printAllFoodCategory();
+                                System.out.println("Choose a number between 1-13: ");
+                                int fc = scanInt(scanner);
+                                if (fc==0) {
+                                    break;
+                                }
+                                foodRepository.searchAllFoodByFoodCategoryID(fc);
+                                System.out.println("Choose foods to order: ");
+                                System.out.println("To finish order press 0");
+                                while (foodId != 0) {
+                                    System.out.println("Give foodID:");
+                                    foodId = scanInt(scanner);
+                                    if (foodId == 0) {
+                                        break;
+                                    }
+                                    System.out.println("Give quantity:");
+                                    quantity = scanInt(scanner);
+                                    if (foodId != 0) {
+                                        Food food = foodRepository.searchById(foodId);
+                                        for (int i = 1; i <= quantity; i++) {
+                                            foodList.add(food);
+                                            totalPrice += food.getPrice();
+                                        }
+                                    }
+                                }
+
+                                System.out.println("Press 0 to go back.");
+                                if (fc == 0) {
+                                    System.out.println("Your order:");
+                                    System.out.println(foodList);
+                                    System.out.println("Total price: " + totalPrice);
+                                    foodMenuNumber2finish = true;
+                                }
+                            }
+                        }
                     }
                     break;
 
                 case 2:
                     boolean case2finish = false;
+                    int foodId;
+                    int quantity;
                     while (!case2finish) {
                         int restaurantNumber;
+                        foodId = -1;
                         System.out.println();
                         System.out.println("Choose a restaurant or press 0 to go back:");
                         System.out.println();
                         restaurantRepository.printAll();
                         restaurantNumber = scanInt(scanner);
-                        Restaurant restaurant = restaurantRepository.searchById(restaurantNumber);
-                        System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
+                        if (restaurantNumber != 0) {
+                            Restaurant restaurant = restaurantRepository.searchById(restaurantNumber);
+                            System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
+                            System.out.println("Choose foods to order: ");
+                            System.out.println("To finish order press 0");
+
+                            while (foodId != 0) {
+                                System.out.println("Give foodID:");
+                                foodId = scanInt(scanner);
+                                if (foodId == 0) {
+                                    break;
+                                }
+                                System.out.println("Give quantity:");
+                                quantity = scanInt(scanner);
+                                if (foodId != 0) {
+                                    Food food = foodRepository.searchById(foodId);
+                                    for (int i = 1; i <= quantity; i++) {
+                                        foodList.add(food);
+                                        totalPrice += food.getPrice();
+                                    }
+                                }
+                            }
+                        }
                         if (restaurantNumber == 0) {
+                            System.out.println("Your order:");
+                            System.out.println(foodList);
+                            System.out.println("Total price: " + totalPrice);
                             case2finish = true;
                         }
                     }
@@ -130,6 +208,10 @@ public class JunikornPincer {
                     while (!case3finish) {
                         System.out.println("Your order:");
                         System.out.println(foodList);
+                        totalPrice=0;
+                        for (Food food : foodList) {
+                            totalPrice+=food.getPrice();
+                        }
                         System.out.println("Total price: " + totalPrice);
                         System.out.println("    1 - Finish order - Pay");
                         System.out.println("    2 - Change order");
@@ -140,7 +222,90 @@ public class JunikornPincer {
                             Orders orders = new Orders(date, foodList, customer);
                             ordersRepository.insertOrders(orders);
                             case3finish = true;
+                            finish=true;
                         }
+                        if (case3menu == 2) {
+                            List<Food> toDelete = new ArrayList<>();
+                            boolean deleteFinish = false;
+                            while (!deleteFinish) {
+                                System.out.println(foodList);
+                                System.out.println("Give idFood to delete (0 to exit):");
+                                int idFood = scanInt(scanner);
+                                if (idFood == 0) {
+                                    break;
+                                }
+                                System.out.println("Quantity to delete:");
+                                int foodQuantity = scanInt(scanner);
+                                for (int i = 1; i <= foodQuantity; i++) {
+                                    Food food = foodRepository.searchById(idFood);
+                                    toDelete.add(food);
+                                }
+                                foodList.removeAll(toDelete);
+                            }
+                        }
+                        if (case3menu == 3) {
+                            case3finish = true;
+                        }
+                    }
+
+                    break;
+
+                case 4:
+                    boolean case4finish = false;
+                    while (!case4finish) {
+                        System.out.println("1 - Change your name");
+                        System.out.println("2 - Change your email");
+                        System.out.println("3 - Change your password");
+                        System.out.println("4 - Change your phone number");
+                        System.out.println("5 - Change your city");
+                        System.out.println("6 - Change your street");
+                        System.out.println("7 - Change your house number");
+                        System.out.println("0 - Apply");
+                        System.out.println();
+                        System.out.println(customer);
+                        int choice = scanInt(scanner);
+                        switch (choice) {
+                            case 1:
+                                System.out.println("Give your name:");
+                                String name = scanner.nextLine();
+                                customer.setName(name);
+                                break;
+                            case 2:
+                                System.out.println("Give your email:");
+                                String email = scanner.nextLine();
+                                customer.setEmail(email);
+                                break;
+                            case 3:
+                                System.out.println("Give your password:");
+                                String password = scanner.nextLine();
+                                customer.setPassword(password);
+                                break;
+                            case 4:
+                                System.out.println("Give your phone number:");
+                                String phone = scanner.nextLine();
+                                customer.setPhoneNumber(phone);
+                                break;
+                            case 5:
+                                System.out.println("Give your city:");
+                                String city = scanner.nextLine();
+                                customer.getAddress().setCity(city);
+                                break;
+                            case 6:
+                                System.out.println("Give your street:");
+                                String street = scanner.nextLine();
+                                customer.getAddress().setStreet(street);
+                                break;
+                            case 7:
+                                System.out.println("Give your house number:");
+                                String house = scanner.nextLine();
+                                customer.getAddress().setNumber(house);
+                                break;
+                            case 0:
+                                customerRepository.updateCustomerInfo(customer);
+                                case4finish = true;
+                                break;
+                        }
+
                     }
                     break;
                 case 5:
@@ -149,9 +314,7 @@ public class JunikornPincer {
                 case 6:
                     System.exit(1);
             }
-
         }
-
     }
 
 
@@ -237,7 +400,7 @@ public class JunikornPincer {
     }
 
     public static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository,
-                                       CustomerRepository customerRepository, OrdersRepository ordersRepository) throws
+                                      CustomerRepository customerRepository, OrdersRepository ordersRepository) throws
             InterruptedException {
         Scanner scanner = new Scanner(System.in);
         int menuNumber = 0;
@@ -335,12 +498,11 @@ public class JunikornPincer {
                     break;
                 case 5:
                     finish = true;
+                    System.exit(0);
                     break;
 
             }
-
         }
-
     }
 
 

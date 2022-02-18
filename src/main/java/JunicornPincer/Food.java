@@ -1,6 +1,7 @@
 package JunicornPincer;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Food {
     private int id;
@@ -71,6 +72,19 @@ public class Food {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Food food = (Food) o;
+        return id == food.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, foodCategory, price, restaurant);
     }
 
     @Override
