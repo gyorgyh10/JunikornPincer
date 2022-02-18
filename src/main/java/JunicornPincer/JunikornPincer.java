@@ -2,6 +2,11 @@ package JunicornPincer;
 
 import JunicornPincer.Repositories.*;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -124,7 +129,7 @@ public class JunikornPincer {
                                 foodRepository.printAllFoodCategory();
                                 System.out.println("Choose a number between 1-13: ");
                                 int fc = scanInt(scanner);
-                                if (fc==0) {
+                                if (fc == 0) {
                                     break;
                                 }
                                 foodRepository.searchAllFoodByFoodCategoryID(fc);
@@ -208,9 +213,9 @@ public class JunikornPincer {
                     while (!case3finish) {
                         System.out.println("Your order:");
                         System.out.println(foodList);
-                        totalPrice=0;
+                        totalPrice = 0;
                         for (Food food : foodList) {
-                            totalPrice+=food.getPrice();
+                            totalPrice += food.getPrice();
                         }
                         System.out.println("Total price: " + totalPrice);
                         System.out.println("    1 - Finish order - Pay");
@@ -221,8 +226,9 @@ public class JunikornPincer {
                             Date date = new Date(System.currentTimeMillis());
                             Orders orders = new Orders(date, foodList, customer);
                             ordersRepository.insertOrders(orders);
+                            printOrder(orders, totalPrice);
                             case3finish = true;
-                            finish=true;
+                            finish = true;
                         }
                         if (case3menu == 2) {
                             List<Food> toDelete = new ArrayList<>();
@@ -314,6 +320,29 @@ public class JunikornPincer {
                 case 6:
                     System.exit(1);
             }
+        }
+    }
+
+    private static void printOrder(Orders orders, int totalPrice) {
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of("src/main/resources/bill"+
+                        orders.getId()+".txt"),
+                StandardOpenOption.CREATE)) {
+            Customer customer = orders.getCustomer();
+            bufferedWriter.newLine();
+            bufferedWriter.newLine();
+            bufferedWriter.write(customer.getName() + "               " + customer.getAddress().getCity() + ", " +
+                    customer.getAddress().getStreet() + ", " + customer.getAddress().getNumber());
+            bufferedWriter.newLine();
+            bufferedWriter.newLine();
+            bufferedWriter.newLine();
+            for (Food food : orders.getFoodList()) {
+                bufferedWriter.write(food.getRestaurant().getName() + ":      " + food.getName() + " - " + food.getPrice() + "Ft");
+                bufferedWriter.newLine();
+            }
+            bufferedWriter.newLine();
+            bufferedWriter.write("      Total price: " + totalPrice + "Ft");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
