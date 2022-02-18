@@ -34,18 +34,19 @@ public class JunikornPincer {
         }
     }
 
-    private static void showLoggedInMenu() {
+    public static void showLoggedInMenu() {
         System.out.println();
         System.out.println("Please select a menu number: ");
         System.out.println("1 - Search food");
         System.out.println("2 - Search Restaurants");
         System.out.println("3 - Check your order list");
         System.out.println("4 - Change your data");
-        System.out.println("5 - Exit");
+        System.out.println("5 - Log out");
+        System.out.println("6 - Exit");
         System.out.println();
     }
 
-    private static void loggedIn(Customer customer, CustomerRepository customerRepository, FoodRepository foodRepository,
+    public static void loggedIn(Customer customer, CustomerRepository customerRepository, FoodRepository foodRepository,
                                  RestaurantRepository restaurantRepository, OrdersRepository ordersRepository) {
         Scanner scanner = new Scanner(System.in);
         int menuNumber = 0;
@@ -90,10 +91,12 @@ public class JunikornPincer {
                                 foodId = scanInt(scanner);
                                 System.out.println("Give quantity:");
                                 quantity = scanInt(scanner);
-                                Food food = foodRepository.searchById(foodId);
-                                for (int i = 1; i <= quantity; i++) {
-                                    foodList.add(food);
-                                    totalPrice += food.getPrice();
+                                if (foodId!=0) {
+                                    Food food = foodRepository.searchById(foodId);
+                                    for (int i = 1; i <= quantity; i++) {
+                                        foodList.add(food);
+                                        totalPrice += food.getPrice();
+                                    }
                                 }
                             }
                             System.out.println("Your order:");
@@ -134,7 +137,8 @@ public class JunikornPincer {
                         int case3menu = scanInt(scanner);
                         if (case3menu == 1) {
                             Date date = new Date(System.currentTimeMillis());
-                            ordersRepository.insertOrders(new Orders(date, foodList, customer));
+                            Orders orders = new Orders(date, foodList, customer);
+                            ordersRepository.insertOrders(orders);
                             case3finish = true;
                         }
                     }
@@ -142,7 +146,8 @@ public class JunikornPincer {
                 case 5:
                     finish = true;
                     break;
-
+                case 6:
+                    System.exit(1);
             }
 
         }
@@ -150,7 +155,7 @@ public class JunikornPincer {
     }
 
 
-    private static Customer register(CustomerRepository customerRepository) {
+    public static Customer register(CustomerRepository customerRepository) {
         Customer customer = null;
         boolean good = false;
         Scanner scanner = new Scanner(System.in);
@@ -188,11 +193,10 @@ public class JunikornPincer {
             }
         }
         int id = customerRepository.insertCustomer(customer);
-        customer.setId(id);
-        return customer;
+        return customerRepository.searchById(id);
     }
 
-    private static Customer login(CustomerRepository customerRepository) {
+    public static Customer login(CustomerRepository customerRepository) {
         Customer customer = null;
 
         Scanner scanner = new Scanner(System.in);
@@ -221,7 +225,7 @@ public class JunikornPincer {
         return customer;
     }
 
-    private static void showMenu() {
+    public static void showMenu() {
         System.out.println();
         System.out.println("Please select a menu number: ");
         System.out.println("1 - Search food");
@@ -232,7 +236,7 @@ public class JunikornPincer {
         System.out.println();
     }
 
-    private static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository,
+    public static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository,
                                        CustomerRepository customerRepository, OrdersRepository ordersRepository) throws
             InterruptedException {
         Scanner scanner = new Scanner(System.in);

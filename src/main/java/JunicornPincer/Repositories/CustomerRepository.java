@@ -64,7 +64,7 @@ public class CustomerRepository implements AutoCloseable {
 
             preparedStatement2.executeUpdate();
 
-            ResultSet rs2 = preparedStatement.getGeneratedKeys();
+            ResultSet rs2 = preparedStatement2.getGeneratedKeys();
             int generatedKey2 = 0;
             if (rs2.next()) {
                 generatedKey2 = rs2.getInt(1);
@@ -140,7 +140,7 @@ public class CustomerRepository implements AutoCloseable {
 
     public void updateCustomerInfo(Customer customer) {
         String sql = "UPDATE customer SET name=?, email=?, password=?, phoneNumber=? WHERE id=?; " +
-                        "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
+                "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, customer.getName());
