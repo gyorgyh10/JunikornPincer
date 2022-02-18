@@ -26,13 +26,8 @@ public class JunikornPincer {
 //            Database database = new Database();
 //            database.init();
             Junikorn();
-            Customer customer = login(customerRepository);
-            everythingMenu(restaurantRepository, foodRepository, customerRepository);
-            if (customer == null) {
-                everythingMenu(restaurantRepository, foodRepository, customerRepository);
-            } else {
-                loggedIn(customer, customerRepository, foodRepository, restaurantRepository, ordersRepository);
-            }
+            everythingMenu(restaurantRepository, foodRepository, customerRepository, ordersRepository);
+
 
         } catch (SQLException | InterruptedException e) {
             e.printStackTrace();
@@ -237,7 +232,8 @@ public class JunikornPincer {
         System.out.println();
     }
 
-    private static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository, CustomerRepository customerRepository) throws
+    private static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository,
+                                       CustomerRepository customerRepository, OrdersRepository ordersRepository) throws
             InterruptedException {
         Scanner scanner = new Scanner(System.in);
         int menuNumber = 0;
@@ -282,28 +278,57 @@ public class JunikornPincer {
                         }
 
                         if (foodMenuNumber == 2) {
-                            boolean foodMenuNumber2finish =false;
-                            while(!foodMenuNumber2finish) {
+                            boolean foodMenuNumber2finish = false;
+                            while (!foodMenuNumber2finish) {
                                 foodRepository.printAllFoodCategory();
                                 System.out.println("Choose a number between 1-13: ");
-                                foodRepository.searchAllFoodByFoodCategoryByID();
+                                int fc = scanInt(scanner);
+                                foodRepository.searchAllFoodByFoodCategoryID(fc);
+                                System.out.println("Press 0 to go back.");
+                                if (fc == 0) {
+                                    foodMenuNumber2finish = true;
+                                }
                             }
-
                         }
                     }
                     break;
 
                 case 2:
                     int restaurantNumber;
-                    System.out.println();
-                    System.out.println("Choose a restaurant:");
-                    System.out.println();
-                    restaurantRepository.printAll();
-                    restaurantNumber = scanInt(scanner);
-                    Restaurant restaurant = restaurantRepository.searchById(restaurantNumber);
-                    System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
+                    boolean case2finish = false;
+                    while (!case2finish) {
+                        System.out.println();
+                        System.out.println("Choose a restaurant:");
+                        System.out.println();
+                        restaurantRepository.printAll();
+                        System.out.println("Press 0 to go back.");
+                        restaurantNumber = scanInt(scanner);
+
+                        Restaurant restaurant = null;
+                        try {
+                            restaurant = restaurantRepository.searchById(restaurantNumber);
+                            System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
+                        } catch (NullPointerException e) {
+                            System.out.println("Wrong number!");
+                        }
+                        if (restaurantNumber == 0) {
+                            case2finish = true;
+                        }
+                    }
                     break;
 
+                case 3:
+                    Customer customer = register(customerRepository);
+                    loggedIn(customer, customerRepository, foodRepository, restaurantRepository, ordersRepository);
+                    break;
+                case 4:
+                    Customer customer1 = login(customerRepository);
+                    if (customer1 == null) {
+                        everythingMenu(restaurantRepository, foodRepository, customerRepository, ordersRepository);
+                    } else {
+                        loggedIn(customer1, customerRepository, foodRepository, restaurantRepository, ordersRepository);
+                    }
+                    break;
                 case 5:
                     finish = true;
                     break;
@@ -311,6 +336,7 @@ public class JunikornPincer {
             }
 
         }
+
     }
 
 

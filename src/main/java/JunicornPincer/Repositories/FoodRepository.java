@@ -35,11 +35,11 @@ public class FoodRepository implements AutoCloseable {
         }
     }
 
-    public void uploadFoodCategories(){
-        for (FoodCategory foodCategory: FoodCategory.values()) {
+    public void uploadFoodCategories() {
+        for (FoodCategory foodCategory : FoodCategory.values()) {
             try {
-            String sql="INSERT INTO foodCategory (name) VALUES ('" + foodCategory+"')";
-            Statement statement= connection.createStatement();
+                String sql = "INSERT INTO foodCategory (name) VALUES ('" + foodCategory + "')";
+                Statement statement = connection.createStatement();
                 statement.execute(sql);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -67,12 +67,12 @@ public class FoodRepository implements AutoCloseable {
     }
 
 
-    public void insertFood(Food food){
-        String sql="INSERT INTO food (name, foodCategory, price, restaurantID) " +
+    public void insertFood(Food food) {
+        String sql = "INSERT INTO food (name, foodCategory, price, restaurantID) " +
                 "VALUES (?,?,?,?)";
-        try (PreparedStatement preparedStatement= connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, food.getName());
-            preparedStatement.setInt(2, food.getFoodCategory().ordinal()+1);
+            preparedStatement.setInt(2, food.getFoodCategory().ordinal() + 1);
             preparedStatement.setInt(3, food.getPrice());
             preparedStatement.setInt(4, food.getRestaurant().getId());
 
@@ -107,7 +107,7 @@ public class FoodRepository implements AutoCloseable {
                         address, resultSet.getString(9),
                         resultSet.getBoolean(10));
                 food = new Food(id, resultSet.getString(2),
-                        FoodCategory.values()[resultSet.getInt(3)-1],
+                        FoodCategory.values()[resultSet.getInt(3) - 1],
                         resultSet.getInt(4), restaurant);
             }
         } catch (SQLException throwables) {
@@ -118,10 +118,10 @@ public class FoodRepository implements AutoCloseable {
 
     public void updateFoodInfo(Food food) {
         String sql = "UPDATE food  SET id=?, name=?, foodCategory=?, price=?, restaurantID=? WHERE id=? ";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, food.getId());
             preparedStatement.setString(2, food.getName());
-            preparedStatement.setInt(3, food.getFoodCategory().ordinal()+1);
+            preparedStatement.setInt(3, food.getFoodCategory().ordinal() + 1);
             preparedStatement.setInt(4, food.getPrice());
             preparedStatement.setInt(5, food.getRestaurant().getId());
             preparedStatement.setInt(6, food.getId());
@@ -137,13 +137,13 @@ public class FoodRepository implements AutoCloseable {
         String sql = "SELECT f.id, f.name, f.foodCategory, f.price, r.name " +
                 "FROM food f " +
                 "JOIN restaurant r ON f.restaurantID=r.id ";
-        try(PreparedStatement preparedStatement=connection.prepareStatement(sql)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 //                 1        2       3               4       5
 //                f.id, f.name, f.foodCategory, f.price, r.name
                 System.out.println(resultSet.getInt(1) + " | " + resultSet.getString(2) + " | " +
-                        FoodCategory.values()[resultSet.getInt(3)-1] + " | "  + resultSet.getInt(4) + " | " +
+                        FoodCategory.values()[resultSet.getInt(3) - 1] + " | " + resultSet.getInt(4) + " | " +
                         "restaurant=" + resultSet.getString(5));
             }
         } catch (SQLException throwables) {
@@ -151,12 +151,37 @@ public class FoodRepository implements AutoCloseable {
         }
     }
 
-    public void printAllFoodCategory (){
+    public void printAllFoodCategory() {
         FoodCategory[] foodCategoriesArray = FoodCategory.values();
         for (int i = 1; i <= foodCategoriesArray.length; i++) {
-            System.out.println(i + " - " + foodCategoriesArray[i-1]);
+            System.out.println(i + " - " + foodCategoriesArray[i - 1]);
         }
 
+    }
+
+    public void searchAllFoodByFoodCategoryID(int categoryID) {
+        String sql = "SELECT f.id, f.name AS f_name, f.price, fc.name AS fc_name " +
+                "FROM food f " +
+                "JOIN foodcategory fc ON fc.id=f.foodCategory " +
+                "WHERE fc.id= ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, categoryID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                System.out.println("Foods from " + resultSet.getString("fc_name"));
+                System.out.println("--------------------------------");
+                System.out.println(resultSet.getInt("id") + " | " + resultSet.getString("f_name")
+                        + " | " + resultSet.getInt("price"));
+            }
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("id") + " | " + resultSet.getString("f_name")
+                        + " | " + resultSet.getInt("price"));
+            }
+            System.out.println("--------------------------------");
+            System.out.println();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
