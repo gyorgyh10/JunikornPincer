@@ -26,11 +26,11 @@ public class JunikornPincer {
 //            Database database = new Database();
 //            database.init();
             Junikorn();
-
-            if (login(customerRepository) == null) {
-                everythingMenu(restaurantRepository, foodRepository);
+            Customer customer = login(customerRepository);
+            everythingMenu(restaurantRepository, foodRepository, customerRepository);
+            if (customer == null) {
+                everythingMenu(restaurantRepository, foodRepository, customerRepository);
             } else {
-                Customer customer = login(customerRepository);
                 loggedIn(customer, customerRepository, foodRepository, restaurantRepository, ordersRepository);
             }
 
@@ -217,7 +217,18 @@ public class JunikornPincer {
         return customer;
     }
 
-    private static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository) throws
+    private static void showMenu() {
+        System.out.println();
+        System.out.println("Please select a menu number: ");
+        System.out.println("1 - Search food");
+        System.out.println("2 - Search Restaurants");
+        System.out.println("3 - Register");
+        System.out.println("4 - Log in");
+        System.out.println("5 - exit");
+        System.out.println();
+    }
+
+    private static void everythingMenu(RestaurantRepository restaurantRepository, FoodRepository foodRepository, CustomerRepository customerRepository) throws
             InterruptedException {
         Scanner scanner = new Scanner(System.in);
         int menuNumber = 0;
@@ -293,16 +304,7 @@ public class JunikornPincer {
     }
 
 
-    private static void showMenu() {
-        System.out.println();
-        System.out.println("Please select a menu number: ");
-        System.out.println("1 - Search food");
-        System.out.println("2 - Search Restaurants");
-        System.out.println("3 - Register");
-        System.out.println("4 - Log in");
-        System.out.println("5 - exit");
-        System.out.println();
-    }
+
 
     private static void Junikorn() {
         System.out.println();
