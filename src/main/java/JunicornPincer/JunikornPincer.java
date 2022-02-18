@@ -104,37 +104,46 @@ public class JunikornPincer {
                             System.out.println("Your order:");
                             System.out.println(foodList);
                             System.out.println("Total price: " + totalPrice);
-//                                    foodnumber1finish = true;
-//                                }
+                            case1finish = true;
                         }
 
                     }
                     break;
 
                 case 2:
-                    int restaurantNumber;
-                    System.out.println();
-                    System.out.println("Choose a restaurant:");
-                    System.out.println();
-                    restaurantRepository.printAll();
-                    restaurantNumber = scanInt(scanner);
-                    Restaurant restaurant = restaurantRepository.searchById(restaurantNumber);
-                    System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
+                    boolean case2finish = false;
+                    while (!case2finish) {
+                        int restaurantNumber;
+                        System.out.println();
+                        System.out.println("Choose a restaurant or press 0 to go back:");
+                        System.out.println();
+                        restaurantRepository.printAll();
+                        restaurantNumber = scanInt(scanner);
+                        Restaurant restaurant = restaurantRepository.searchById(restaurantNumber);
+                        System.out.println(restaurantRepository.allFoodsOfRestaurant(restaurant));
+                        if (restaurantNumber == 0) {
+                            case2finish = true;
+                        }
+                    }
                     break;
 
                 case 3:
-                    System.out.println("Your order:");
-                    System.out.println(foodList);
-                    System.out.println("Total price: " + totalPrice);
-                    System.out.println("    1 - Finish order - Pay");
-                    System.out.println("    2 - Change order");
-                    System.out.println("    3 - Back");
-                    int case3menu = scanInt(scanner);
-                    if (case3menu == 1) {
-                        Date date= new Date(System.currentTimeMillis());
-                        ordersRepository.insertOrders(new Orders(date,foodList,customer));
+                    boolean case3finish = false;
+                    while (!case3finish) {
+                        System.out.println("Your order:");
+                        System.out.println(foodList);
+                        System.out.println("Total price: " + totalPrice);
+                        System.out.println("    1 - Finish order - Pay");
+                        System.out.println("    2 - Change order");
+                        System.out.println("    3 - Back");
+                        int case3menu = scanInt(scanner);
+                        if (case3menu == 1) {
+                            Date date = new Date(System.currentTimeMillis());
+                            ordersRepository.insertOrders(new Orders(date, foodList, customer));
+                            case3finish = true;
+                        }
                     }
-
+                    break;
                 case 5:
                     finish = true;
                     break;
@@ -261,10 +270,23 @@ public class JunikornPincer {
                         if (foodMenuNumber == 1) {
                             boolean foodnumber1finish = false;
                             while (!foodnumber1finish) {
-                                System.out.println("choose a food to order: ");
-                                foodRepository.printAll();                              //innentől ORDER FOOD
+                                foodRepository.printAll();
                                 System.out.println();
-                                foodnumber1finish = true;
+                                System.out.println("press 0 to go back ");
+                                Integer back = scanInt(scanner);
+                                if (back == 0) {
+                                    foodnumber1finish = true;
+                                }
+                            }
+
+                        }
+
+                        if (foodMenuNumber == 2) {
+                            boolean foodMenuNumber2finish =false;
+                            while(!foodMenuNumber2finish) {
+                                foodRepository.printAllFoodCategory();
+                                System.out.println("Choose a number between 1-13: ");
+                                foodRepository.searchAllFoodByFoodCategoryByID();
                             }
 
                         }
@@ -302,8 +324,6 @@ public class JunikornPincer {
         }
         return scannedInt;
     }
-
-
 
 
     private static void Junikorn() {

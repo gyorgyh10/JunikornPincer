@@ -151,6 +151,14 @@ public class FoodRepository implements AutoCloseable {
         }
     }
 
+    public void printAllFoodCategory (){
+        FoodCategory[] foodCategoriesArray = FoodCategory.values();
+        for (int i = 1; i <= foodCategoriesArray.length; i++) {
+            System.out.println(i + " - " + foodCategoriesArray[i-1]);
+        }
+
+    }
+
     @Override
     public void close() throws SQLException {
         connection.close();
