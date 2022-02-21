@@ -32,12 +32,10 @@ public class JunikornPincer {
              FoodRepository foodRepository = new FoodRepository();
              OrdersRepository ordersRepository = new OrdersRepository()) {
 
-//            Database database = new Database();
-//            database.init();
+            Database database = new Database();
+            database.init();
             Junikorn();
             everythingMenu(restaurantRepository, foodRepository, customerRepository, ordersRepository);
-//            login(customerRepository);
-//            loggedIn();
 
         } catch (SQLException | InterruptedException e) {
             e.printStackTrace();
@@ -245,8 +243,8 @@ public class JunikornPincer {
                                 for (int i = 1; i <= foodQuantity; i++) {
                                     Food food = foodRepository.searchById(idFood);
                                     toDelete.add(food);
+                                    foodList.remove(food);
                                 }
-                                foodList.removeAll(toDelete);
                             }
                         }
                         if (case3menu == 3) {

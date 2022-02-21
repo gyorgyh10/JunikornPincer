@@ -93,7 +93,7 @@ public class Food {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", foodCategory=" + foodCategory +
-                ", price=" + price +
+                ", price=" + price + "Ft" +
 //                ", ratings=" + ratings +
                 ", restaurant=" + restaurant.getName() +
                 '}' +" \n";
