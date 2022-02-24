@@ -32,8 +32,8 @@ public class JunikornPincer {
              FoodRepository foodRepository = new FoodRepository();
              OrdersRepository ordersRepository = new OrdersRepository()) {
 
-            Database database = new Database();
-            database.init();
+//            Database database = new Database();
+//            database.init();
             Junikorn();
             everythingMenu(restaurantRepository, foodRepository, customerRepository, ordersRepository);
 

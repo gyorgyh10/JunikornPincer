@@ -80,10 +80,10 @@ public class OrdersRepository implements AutoCloseable {
             for (int i = 0; i < foodList.size(); i++) {
                 preparedStatement.setInt(1, orders.getId());
                 preparedStatement.setInt(2, foodList.get(i).getId());
-                preparedStatement.executeUpdate();
+                preparedStatement.addBatch();
             }
 
-
+          preparedStatement.executeBatch();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
