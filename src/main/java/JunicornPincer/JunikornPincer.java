@@ -15,14 +15,13 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class JunikornPincer {
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
     private List<Restaurant> restaurantList;
     private List<Customer> customerList;
     private int deliveryPrice;
     private List<Orders> ordersList;
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-
 
     public static void main(String[] args) {
 
@@ -322,8 +321,8 @@ public class JunikornPincer {
     }
 
     private static void printOrder(Orders orders, int totalPrice) {
-        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of("src/main/resources/bill"+
-                        orders.getId()+".txt"),
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of("src/main/resources/bill" +
+                        orders.getId() + ".txt"),
                 StandardOpenOption.CREATE)) {
             Customer customer = orders.getCustomer();
             bufferedWriter.newLine();
@@ -562,7 +561,7 @@ public class JunikornPincer {
                 "      < <<`       ||\n" +
                 "       `\\\\\\       ||\n" +
                 "         )\\\\      )\\\n" +
-                " ^^^jgs^^\"\"\"^^^^^^\"\"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+                " ^^^\"\"\"^^^^^^\"\"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         System.out.println();
         try {
             TimeUnit.SECONDS.sleep(1);

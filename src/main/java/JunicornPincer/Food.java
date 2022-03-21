@@ -1,6 +1,5 @@
 package JunicornPincer;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Food {
@@ -8,7 +7,7 @@ public class Food {
     private String name;
     private FoodCategory foodCategory;
     private int price;
-//    private List<Integer> ratings;                  //SQLben JOIN (food->rating)
+    //    private List<Integer> ratings;                  //SQLben JOIN (food->rating)
     private Restaurant restaurant;                   //SQLben FOREIGN KEY.
 
     public Food(int id, String name, FoodCategory foodCategory, int price, Restaurant restaurant) {
@@ -96,6 +95,6 @@ public class Food {
                 ", price=" + price + "Ft" +
 //                ", ratings=" + ratings +
                 ", restaurant=" + restaurant.getName() +
-                '}' +" \n";
+                '}' + " \n";
     }
 }

@@ -83,7 +83,7 @@ public class OrdersRepository implements AutoCloseable {
                 preparedStatement.addBatch();
             }
 
-          preparedStatement.executeBatch();
+            preparedStatement.executeBatch();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -103,7 +103,7 @@ public class OrdersRepository implements AutoCloseable {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<Food> foodList=new ArrayList<>();
+            List<Food> foodList = new ArrayList<>();
             while (resultSet.next()) {
 
 //                1     2       3       4     5     6       7           8           9      10   11      12      13   14
@@ -121,7 +121,7 @@ public class OrdersRepository implements AutoCloseable {
                         addressR, resultSet.getString(25),
                         resultSet.getBoolean(26));
                 Food food = new Food(resultSet.getInt(17), resultSet.getString(18),
-                        FoodCategory.values()[resultSet.getInt(19)-1],
+                        FoodCategory.values()[resultSet.getInt(19) - 1],
                         resultSet.getInt(20), restaurant);
                 Address addressC = new Address(resultSet.getInt(10), resultSet.getString(11),
                         resultSet.getString(12), resultSet.getString(13));

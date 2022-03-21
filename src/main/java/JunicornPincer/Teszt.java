@@ -15,7 +15,7 @@ public class Teszt {
 
         try {
             Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-            String str= "CREATE TABLE IF NOT EXISTS "+ City.KECSKEMÉT+ "(" +
+            String str = "CREATE TABLE IF NOT EXISTS " + City.KECSKEMÉT + "(" +
                     "id INT PRIMARY KEY) ";
             Statement statement = connection.createStatement();
             statement.execute(str);

@@ -102,21 +102,21 @@ public class RestaurantRepository implements AutoCloseable {
         return restaurant;
     }
 
-    public List<Food> allFoodsOfRestaurant(Restaurant restaurant){
+    public List<Food> allFoodsOfRestaurant(Restaurant restaurant) {
         List<Food> foodList = new ArrayList<>();
         String sql = "SELECT f.id, f.name, f.foodCategory, f.price " +
                 "FROM food f " +
                 "JOIN restaurant r ON f.restaurantID=r.id " +
                 "WHERE r.id=?";
-        try(PreparedStatement preparedStatement=connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1,restaurant.getId());
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, restaurant.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
 ///            1    2       3             4         5
 //            id, name, foodCategory, price, restaurantID
-            while (resultSet.next()){
-                Food food=new Food(resultSet.getInt(1), resultSet.getString(2),
-                        FoodCategory.values()[resultSet.getInt(3)-1],
-                        resultSet.getInt(4),restaurant);
+            while (resultSet.next()) {
+                Food food = new Food(resultSet.getInt(1), resultSet.getString(2),
+                        FoodCategory.values()[resultSet.getInt(3) - 1],
+                        resultSet.getInt(4), restaurant);
                 foodList.add(food);
             }
         } catch (SQLException throwables) {
@@ -127,7 +127,7 @@ public class RestaurantRepository implements AutoCloseable {
 
     public void updateRestaurantInfo(Restaurant restaurant) {
         String sql = "UPDATE restaurant  SET id=?, name=?, addressID=?, phoneNumber=?, canDeliver=? WHERE id=? " +
-                     "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
+                "UPDATE address SET city=?, street=?, number=? WHERE id=? ";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, restaurant.getId());
             preparedStatement.setString(2, restaurant.getName());

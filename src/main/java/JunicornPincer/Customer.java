@@ -3,8 +3,6 @@ package JunicornPincer;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.List;
-
 public class Customer {
     private int id;
     private String name;
